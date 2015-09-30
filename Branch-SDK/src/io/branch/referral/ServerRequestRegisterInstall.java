@@ -3,6 +3,7 @@ package io.branch.referral;
 import android.app.Application;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,6 +121,7 @@ class ServerRequestRegisterInstall extends ServerRequest {
                 prefHelper_.setSessionParams(PrefHelper.NO_STRING_VALUE);
             }
             if (callback_ != null) {
+                Log.d("BranchSDK","\nInstall::onInitFinished() latest param is " +branch.getLatestReferringParams());
                 callback_.onInitFinished(branch.getLatestReferringParams(), null);
             }
         } catch (Exception ex) {

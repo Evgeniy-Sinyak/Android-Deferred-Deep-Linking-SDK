@@ -850,9 +850,11 @@ public class Branch {
                 if(isAutoSessionMode_) {
                     // Since Auto session mode initialise the session by itself on starting the first activity, we need to provide user
                     // the referring params if they call init session after init is completed. Note that user wont do InitSession per activity in auto session mode.
+                    Log.d("BranchSDK", "\nSession Already initialised. latest param is " + getLatestReferringParams());
                     callback.onInitFinished(getLatestReferringParams(), null);
                 }else{
                     // Since user will do init session per activity in non auto session mode , we don't want to repeat the referring params with each initSession()call.
+                    Log.d("BranchSDK","\nSession already initialised. latest param is " +"{}");
                     callback.onInitFinished(new JSONObject(), null);
                 }
             }
@@ -1057,8 +1059,11 @@ public class Branch {
     }
 
     private boolean readAndStripParam(Uri data, Activity activity) {
+        Log.d("BranchSDK","readAndStripParam : intent data " + data);
         if (data != null && data.isHierarchical() && activity != null) {
+            Log.d("BranchSDK","readAndStripParam "+ data.toString() );
             if (data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()) != null) {
+                Log.d("BranchSDK","Link Click ID "+ data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()) );
                 prefHelper_.setLinkClickIdentifier(data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey()));
                 String paramString = "link_click_id=" + data.getQueryParameter(Defines.Jsonkey.LinkClickID.getKey());
                 String uriString = activity.getIntent().getDataString();
@@ -1074,6 +1079,7 @@ public class Branch {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -2695,9 +2701,9 @@ public class Branch {
         public void onActivityStarted(Activity activity) {
             if (activityCnt_ < 1) { // Check if this is the first Activity.If so start a session.
                 // Check if debug mode is set in manifest. If so enable debug.
-                if (BranchUtil.isTestModeEnabled(context_)) {
+//                if (BranchUtil.isTestModeEnabled(context_)) {
                     setDebug();
-                }
+//                }
                 Uri intentData = null;
                 if (activity.getIntent() != null) {
                     intentData = activity.getIntent().getData();

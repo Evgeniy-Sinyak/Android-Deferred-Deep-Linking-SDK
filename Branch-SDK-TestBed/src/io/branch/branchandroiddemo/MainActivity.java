@@ -2,6 +2,7 @@ package io.branch.branchandroiddemo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.branch.referral.Branch;
 import io.branch.referral.Branch.BranchReferralInitListener;
@@ -292,9 +298,9 @@ public class MainActivity extends Activity {
                                 Log.i("BranchTestBed", "onChannelSelected... " + channelName);
                             }
                         })
-                        // Custom style for Copy url and More options
-                        //.setCopyUrlStyle(getResources().getDrawable(android.R.drawable.ic_menu_send),"Save this URl","Link added to clipboard")
-                        //.setMoreOptionStyle(getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                                // Custom style for Copy url and More options
+                                //.setCopyUrlStyle(getResources().getDrawable(android.R.drawable.ic_menu_send),"Save this URl","Link added to clipboard")
+                                //.setMoreOptionStyle(getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
                         .shareLink();
             }
         });
@@ -311,30 +317,41 @@ public class MainActivity extends Activity {
         }
 
         //branch.disableTouchDebugging();
+//
+//        branch.initSession(new BranchReferralInitListener() {
+//            @Override
+//            public void onInitFinished(JSONObject referringParams,
+//                                       BranchError error) {
+//                if (error != null) {
+//                    Log.i("BranchTestBed", "branch init failed. Caused by -" + error.getMessage());
+//                } else {
+//                    Log.i("BranchTestBed", "branch init complete!");
+//                    try {
+//                        Iterator<?> keys = referringParams.keys();
+//                        while (keys.hasNext()) {
+//                            String key = (String) keys.next();
+//                            String value = referringParams.getString(key);
+//                            Log.i("BranchTestBed", key + ", " + value);
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }, this.getIntent().getData(), this);
 
-        branch.initSession(new BranchReferralInitListener() {
-            @Override
-            public void onInitFinished(JSONObject referringParams,
-                                       BranchError error) {
-                if (error != null) {
-                    Log.i("BranchTestBed", "branch init failed. Caused by -" + error.getMessage());
-                } else {
-                    Log.i("BranchTestBed", "branch init complete!");
-                    try {
-                        Iterator<?> keys = referringParams.keys();
-                        while (keys.hasNext()) {
-                            String key = (String) keys.next();
-                            String value = referringParams.getString(key);
-                            Log.i("BranchTestBed", key + ", " + value);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, this.getIntent().getData(), this);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                BranchMetaData data  = new BranchMetaData();
+//                data.testPinIssue(MainActivity.this);
+//            }
+//        }).start();
+
+        new DeepLinkLogging().reportAppStart(this,"Branch");
 
     }
+
 
     @Override
     public void onNewIntent(Intent intent) {
